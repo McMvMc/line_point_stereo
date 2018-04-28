@@ -78,7 +78,8 @@ for idx=1:size(img_list_l)
     % [xyzRefinedPoints,refinedPoses] = bundleAdjustment(xyzPoints,pointTracks,cameraPoses,cam_l_param);
 
     toc()
-    
+    prev_R_l_g = R_l_g;
+    prev_t_l_g = t_l_g;
     prev_im_l = im_l;
     prev_im_r = im_r;
     prev_desc_l = desc_l; 
