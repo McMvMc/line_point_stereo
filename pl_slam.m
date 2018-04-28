@@ -3,9 +3,9 @@ addpath('~/YAMLMatlab_0.4.3');
 img_path_l = '~/Desktop/833/project/mav0/cam0/data/';
 img_path_r = '~/Desktop/833/project/mav0/cam1/data/';
 
-[R_l_gt, t_l_gt, cam_l_param] = load_cam(strcat(img_path_l, '../sensor.yaml'));
-[R_r_gt, t_r_gt, cam_r_param] = load_cam(strcat(img_path_r, '../sensor.yaml'));
-[R_r_gt_rel, t_r_gt_rel] = get_rel_Rt(R_l_gt, t_l_gt, R_r_gt, t_r_gt);
+% reads out body frame O P, and convert to R t (left to right)
+[R_r_gt_rel, t_r_gt_rel, cam_l_param, cam_r_param] = ...
+                            read_gt(img_path_l, img_path_r);
 
 img_list_l = dir(strcat(img_path_l, '*.png'));
 img_list_r = dir(strcat(img_path_r, '*.png'));
@@ -24,7 +24,7 @@ for idx=1:size(img_list_l)
                               cam_l_param, cam_r_param);
 
     [desc_l, valid_pts_l] = detect_points(im_l);
-    % [desc_r, valid_pts_r] = detect_points(im_r);
+%     [desc_r, valid_pts_r] = detect_points(im_r);
 
     % matching
     % match_points()
@@ -44,8 +44,8 @@ for idx=1:size(img_list_l)
 
     % visualization and comparison
     draw_epipolar_lines(F, matched_pts_l, matched_pts_r, im_l, im_r);
-    % gt_stereo_Rt(R_l_gt, t_l_gt, R_r_gt, t_r_gt, cam_l_param, cam_r_param, ...
-    %                     im_l, im_r, matched_pts_l, matched_pts_r);
+    gt_stereo_Rt(eye(3), zeros(3,1), R_r_gt_rel, t_r_gt_rel, ...
+        cam_l_param, cam_r_param, im_l, im_r, matched_pts_l, matched_pts_r);
     
 
 % ---- triangulate ---- %
@@ -70,20 +70,12 @@ for idx=1:size(img_list_l)
     
     worldPoints = triangulate(matched_pts_l,matched_pts_r,camMatrix_l,camMatrix_r);
     
-    figure(3), hold on;
-    plot3(worldPoints(:,1),worldPoints(:,2),worldPoints(:,3),'*');
-    cam_l = plotCamera('Location',P_l_g,'Orientation',O_l_g,'Opacity',0);
-    cam_r = plotCamera('Location',P_r_g,'Orientation',O_r_g,'Opacity',0,...
-                                'Color',[0 1 0]);
-    grid on
-    drawnow();
+    draw_3D_pts(worldPoints, O_l_g, P_l_g, O_r_g, P_r_g)
 
 
     % [xyzRefinedPoints,refinedPoses] = bundleAdjustment(xyzPoints,pointTracks,cameraPoses,cam_l_param);
 
     toc()
-    R_r_g'
-    t_r_g'
     
 end
 % pointTracker = vision.PointTracker('MaxBidirectionalError', 3, 'BlockSize', 15, 'MaxIterations', 15);
