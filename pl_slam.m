@@ -12,9 +12,16 @@ step_size = 5;
 img_list_l = dir(strcat(img_path_l, '*.png'));
 img_list_r = dir(strcat(img_path_r, '*.png'));
 
+% ---- database ---- %
+global_3D_pts = zeros(0,3);
+global_descriptor = [];
+
 cur_3D_pts = zeros(0,3);
-cur_pt_ids = zeros(0,3);
+cur_pt_ids = zeros(0,1);
+
 camera_list = {camera_obj()};
+% ---- database ---- %
+
 
 need_redetect = false;
 need_traingulate = false;
@@ -42,6 +49,8 @@ for idx=1:step_size:size(img_list_l)
         
         need_traingulate = true;
     else
+        % track between frames and between stereo
+        % filters points
         [prev_matched_pts_l_filt, matched_pts_l_filt, valid_l] = ...
                                     track_points(prev_matched_pts_l, prev_im_l, im_l);
         [matched_pts_l_filt, matched_pts_r, valid_r] = track_points(matched_pts_l_filt, ...
@@ -59,7 +68,8 @@ for idx=1:step_size:size(img_list_l)
             continue
         end    
     end
- 
+% ---- track features ---- %
+
 % ---- track camera pose ---- %
     if idx ~= 1
         [O_l_g, P_l_g, inlier_idx] = estimateWorldCameraPose(matched_pts_l,...
@@ -71,7 +81,7 @@ for idx=1:step_size:size(img_list_l)
         prev_matched_pts_l = prev_matched_pts_l(inlier_idx, :);
         prev_matched_pts_r = prev_matched_pts_r(inlier_idx, :);
         
-        [O_l_g, P_l_g, cur_3D_pts, fval] = refineRt(prev_O_l_g, prev_P_l_g,...
+        [O_l_g, P_l_g, cur_3D_pts, fval] = refineRt_n_Pts(prev_O_l_g, prev_P_l_g,...
                               O_l_g, P_l_g,...
                               prev_matched_pts_l, prev_matched_pts_r,...
                               matched_pts_l, matched_pts_r,...
@@ -102,6 +112,8 @@ for idx=1:step_size:size(img_list_l)
         % cam_l_param, cam_r_param, im_l, im_r, matched_pts_l, matched_pts_r);
         
         % compare before and after optimization
+        [O_r_g, P_r_g] = right_from_left_cam(O_l_g, P_l_g, R_r_gt_rel, t_r_gt_rel);
+        [R_r_g, t_r_g] = switch_coord_sys(O_r_g, P_r_g);
         proj_l = project_to_cam([cur_3D_pts'; ones(1,size(cur_3D_pts,1))], ...
                                              cam_l_param.IntrinsicMatrix', R_l_g, t_l_g);
         proj_r = project_to_cam([cur_3D_pts'; ones(1,size(cur_3D_pts,1))], ...
@@ -114,12 +126,14 @@ for idx=1:step_size:size(img_list_l)
                     prev_matched_pts_l, prev_matched_pts_r, proj_prev_l', proj_prev_r',...
                                     matched_pts_l, matched_pts_r, proj_l', proj_r');
     end
-    
+% ---- track camera pose ---- %
+
+
 % ---- triangulate ---- %
     [O_r_g, P_r_g] = right_from_left_cam(O_l_g, P_l_g, R_r_gt_rel, t_r_gt_rel);
     
     size(matched_pts_l, 1)
-    if size(matched_pts_l, 1) < 50
+    if size(matched_pts_l, 1) < 80
         need_traingulate = true;
     end
     
@@ -138,15 +152,17 @@ for idx=1:step_size:size(img_list_l)
     end
     
     toc()    
-    
+% ---- triangulate ---- %
+
 % ---- visualize ---- %
     draw_map(cur_3D_pts, O_l_g, P_l_g, O_r_g, P_r_g);
-    
+% ---- visualize ---- %
+
 % ---- bundle adjustment ---- %    
     % [xyzRefinedPoints,refinedPoses] = bundleAdjustment(xyzPoints,pointTracks,cameraPoses,cam_l_param);
-    
+% ---- bundle adjustment ---- %    
+
 % ---- update variables ---- %    
-    %
     prev_O_l_g = O_l_g;
     prev_P_l_g = P_l_g;
     prev_O_r_g = O_r_g;
@@ -156,6 +172,8 @@ for idx=1:step_size:size(img_list_l)
     prev_desc_l = desc_l; 
     prev_matched_pts_l = matched_pts_l;
     prev_matched_pts_r = matched_pts_r;
+% ---- update variables ---- %    
+
 end
 % pointTracker = vision.PointTracker('MaxBidirectionalError', 3, 'BlockSize', 15, 'MaxIterations', 15);
 
