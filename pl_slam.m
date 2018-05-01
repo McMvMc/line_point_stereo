@@ -3,9 +3,10 @@ addpath(YAML_LIB_PATH);
 
 img_path_l = '~/Desktop/833/project/mav0/cam0/data/';
 img_path_r = '~/Desktop/833/project/mav0/cam1/data/';
-step_size = 3;
-start_idx = 700;
-down_scale = 500/700;
+step_size = 5;
+start_idx = 950;
+redetect_thresh = 150;
+down_scale = 1;
 
 % reads out body frame O P, and convert to R t (left to right)
 [R_r_gt_rel, t_r_gt_rel, cam_l_param, cam_r_param] = ...
@@ -68,41 +69,49 @@ for idx=start_idx:step_size:size(img_list_l)
     else
         % track between frames and between stereo
         % filters points
-        [prev_matched_pts_l_filt, matched_pts_l_filt, valid_l] = ...
+        [prev_matched_pts_l_filt, matched_pts_l, valid_l] = ...
                                     track_points(prev_matched_pts_l, prev_im_l, im_l);
-        [matched_pts_l_filt, matched_pts_r, valid_r] = track_points(matched_pts_l_filt, ...
+        [matched_pts_l, matched_pts_r, valid_r] = track_points(matched_pts_l, ...
                                                         im_l, im_r);
         prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);    
 
         size(matched_pts_l, 1)
-        if size(matched_pts_l, 1) < 150
+        if size(matched_pts_l, 1) < redetect_thresh
             need_redetect = true;
-            need_traingulate = true;
+            need_traingulate = true;          
         else
             need_redetect = false;
             need_traingulate = false;
         end
         
+        % H_reproj_err = test_homography(prev_matched_pts_l_filt, matched_pts_l_filt);
+        % 'homo error'
+        % H_reproj_err = median(H_reproj_err)
+        
         avg_disparity = mean(sqrt(sum((prev_matched_pts_l_filt - ...
-                                                matched_pts_l_filt).^2,2)));
+                                                matched_pts_l).^2,2)));
         if avg_disparity>5
+            'camera moving'
+            
             prev_matched_pts_l = prev_matched_pts_l_filt;
-            matched_pts_l = matched_pts_l_filt;
-            cur_3D_pts = cur_3D_pts(valid_l,:);
-            cur_3D_pts = cur_3D_pts(valid_r,:);
+            cur_3D_pts = cur_3D_pts(valid_l, :);
+            cur_3D_pts = cur_3D_pts(valid_r, :);
             cur_pt_ids = cur_pt_ids(valid_l);
-            cur_pt_ids = cur_pt_ids(valid_r);
+            cur_pt_ids = cur_pt_ids(valid_r);  
         else
             continue
         end
         
         % ---- redetection ---- %
         if need_redetect
+
             [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
             new_prev_matched_pts_r, new_matched_pts_l, new_matched_pts_r, ...
-            cur_3D_pts, cur_pt_ids, global_descriptor, matched_pts_l, matched_pts_r]...
-             = redetect_points(prev_im_l, prev_im_r, im_l, im_r, prev_matched_pts_l, ...
-                matched_pts_l, matched_pts_r, cur_3D_pts, cur_pt_ids, global_descriptor);
+            new_cur_pt_ids, cur_3D_pts, cur_pt_ids, global_descriptor, ...
+            matched_pts_l, matched_pts_r]...
+                 = redetect_points(prev_im_l, prev_im_r, im_l, im_r, ...
+                    prev_matched_pts_l, matched_pts_l, matched_pts_r, ...
+                    cur_3D_pts, cur_pt_ids, global_descriptor);
         end
         
     end
@@ -111,10 +120,26 @@ for idx=start_idx:step_size:size(img_list_l)
 
 % ---- track camera pose ---- %
     if idx ~= start_idx
+        
         [O_l_g, P_l_g, inlier_idx] = estimateWorldCameraPose(matched_pts_l,...
-                                                            cur_3D_pts,cam_l_param);
+                                                    cur_3D_pts,cam_l_param);
+        
         P_l_g = P_l_g';
+        
+        % [R_l_g, t_l_g] = switch_coord_sys(O_l_g, P_l_g);
+        % proj_l = project_to_cam([cur_3D_pts'; ones(1,size(cur_3D_pts,1))], ...
+        %                                  cam_l_param.IntrinsicMatrix', R_l_g, t_l_g)';
+        % F_reproj_err = median(vecnorm(proj_l-matched_pts_l,2,2));
+        % error_diff = H_reproj_err - F_reproj_err        
+        % if error_diff >3
+        %     prev_matched_pts_l = prev_matched_pts_l_filt;
+        %     matched_pts_l = matched_pts_l_filt;
+        % else
+        %     continue
+        % end
+        
         cur_3D_pts = cur_3D_pts(inlier_idx, :);
+        cur_pt_ids = cur_pt_ids(inlier_idx);
         matched_pts_l = matched_pts_l(inlier_idx, :);
         matched_pts_r = matched_pts_r(inlier_idx, :);
         prev_matched_pts_l = prev_matched_pts_l(inlier_idx, :);
@@ -171,6 +196,7 @@ for idx=start_idx:step_size:size(img_list_l)
         [new_cur_3D_pts, err] = triangulate(new_matched_pts_l, new_matched_pts_r,...
                                                 camMatrix_l,camMatrix_r);
         cur_3D_pts = [cur_3D_pts; new_cur_3D_pts];
+        cur_pt_ids = [cur_pt_ids new_cur_pt_ids];
         matched_pts_l = [matched_pts_l; new_matched_pts_l];
         matched_pts_r = [matched_pts_r; new_matched_pts_r];
         prev_matched_pts_l = [prev_matched_pts_l; new_prev_matched_pts_l];
