@@ -36,6 +36,9 @@ function [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
     matched_idx = match_idx_pairs(:,1);
     tmp_new_idx = 1:size(new_prev_matched_pts_l, 1);
     new_feat_ids = setdiff(tmp_new_idx, matched_idx);
+    
+    last_id = size(global_descriptor.Features, 1);
+    cur_pt_ids = [cur_pt_ids last_id+1:(last_id+size(new_feat_ids, 2))];
 
     global_descriptor = binaryFeatures([global_descriptor.Features;...
                                 new_prev_desc_l.Features(new_feat_ids, :)]);
@@ -44,6 +47,4 @@ function [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
     new_prev_matched_pts_l = new_prev_matched_pts_l(new_feat_ids, :);
     new_prev_matched_pts_r = new_prev_matched_pts_r(new_feat_ids, :);
     
-    last_id = size(global_descriptor.Features, 2);
-    cur_pt_ids = [cur_pt_ids last_id:(last_id+size(new_feat_ids, 2)-1)];
 end
