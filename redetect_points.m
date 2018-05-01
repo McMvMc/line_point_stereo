@@ -44,6 +44,6 @@ function [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
     new_prev_matched_pts_l = new_prev_matched_pts_l(new_feat_ids, :);
     new_prev_matched_pts_r = new_prev_matched_pts_r(new_feat_ids, :);
     
-    last_id = size(cur_pt_ids, 2);
+    last_id = size(global_descriptor.Features, 2);
     cur_pt_ids = [cur_pt_ids last_id:(last_id+size(new_feat_ids, 2)-1)];
 end

@@ -130,18 +130,7 @@ for idx=start_idx:step_size:size(img_list_l)
                               cam_l_param, cam_r_param, ...
                               cur_3D_pts, R_r_gt_rel, t_r_gt_rel);
         [O_r_g, P_r_g] = right_from_left_cam(O_l_g, P_l_g, R_r_gt_rel, t_r_gt_rel);
-                          
-        % output R t in matlab convention -- transposed relative to cv convention
-        % [F, prev_matched_pts_l_filt, matched_pts_l_filt, R_l_local, t_l_local]...
-        %       = calc_cam_poses(prev_matched_pts_l_filt, matched_pts_l_filt, ...
-        %                                           cam_l_param, cam_l_param);
-
-        % R_l_local = R_l_local'; % to cv convention
-        % t_l_local = t_l_local';
-
-        % gt is in cv convention, 
-        % [O_l_g, P_l_g] = local2globalOP(prev_O_l_g, prev_P_l_g, R_l_local, t_l_local);
-
+        
         % visualization and comparison
         % compare before and after optimization
         if need_redetect
@@ -202,8 +191,6 @@ for idx=start_idx:step_size:size(img_list_l)
     end
     
 % ---- triangulate ---- %
-
-
 
     toc()
 
