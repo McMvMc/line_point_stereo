@@ -1,0 +1,33 @@
+addpath('../YAMLMatlab_0.4.3');
+addpath('../..');
+img_path_l = '../../../mav0/cam0/data/';
+img_path_r = '../../../mav0/cam1/data/';
+
+% reads out body frame O P, and convert to R t (left to right)
+[~, ~, cam_l_param, cam_r_param] = ...
+                            read_gt(img_path_l, img_path_r);
+
+img_list_l = dir(strcat(img_path_l, '*.png'));
+img_list_r = dir(strcat(img_path_r, '*.png'));
+
+
+for idx=1:1 %size(img_list_l)
+    [im_l, im_r] = get_images(strcat(img_path_l, img_list_l(idx).name), ...
+                              strcat(img_path_r, img_list_r(idx).name), ...
+                              cam_l_param, cam_r_param);
+    
+    [desc_l, valid_pts_l] = detect_points(im_l);
+    [desc_r, valid_pts_r] = detect_points(im_r);
+    
+    lsdEdgeList = lsd_mex(im_l, ...
+        [valid_pts_l.Location';ones(1, size(valid_pts_l.Location,2))],...
+        0.5, 0.5, 0.0, 22.5, 20.0, 0.5, 1024);
+    
+    show_detection(im_l, im_r, valid_pts_l.Location, ...
+        valid_pts_r.Location, valid_pts_l.Location, valid_pts_r.Location)
+
+
+end
+
+
+

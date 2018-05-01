@@ -1,0 +1,622 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>BMVC 2015 submission ID 125</title>
+		<style type="text/css">
+			body {
+				font-family: "Open Sans",Helvetica,Arial,sans-serif;
+				margin: 40px;
+				text-align: justify;
+				text-rendering: optimizelegibility;
+			}
+			.maindiv {
+				width: 910px;
+				text-align: justify;
+			}
+			h1 {
+				font-size: 130%;
+				color: #000000;
+			}
+			h3 {
+				margin-top: 3em;
+			}
+			a:link {
+				color: #45a8d1;
+				text-decoration: none;
+			}
+			a:visited {
+				color: #45a8d1;
+				text-decoration: none;
+			}
+			a:hover {
+				color: #347d9c;
+				text-decoration: underline;
+			}
+			a:active {
+				color: #347d9c;
+				text-decoration: none;
+			}
+			.maintable{
+				text-align: center;
+				border-collapse: collapse;
+				border-style: solid;
+				border-width: 1px;
+			}
+			.maintable td {
+				border-style: solid;
+				border-width: 1px;
+			}
+			.results td {
+				border:none;
+			}
+		</style>
+	</head>
+	<body>
+		<div align="center">
+			<div class="maindiv">
+				<div align="center" style="padding-bottom: 50px;">
+					<p>Supplementary material for the BMVC 2015 paper<br /></p>
+					<h1 style="font-size:190%;">Camera Pose Estimation from Lines<br />using Plücker Coordinates</h1>
+					<p>
+						<a href="http://www.fit.vutbr.cz/~ipribyl">Bronislav Přibyl</a>,
+						<a href="http://www.fit.vutbr.cz/~zemcik">Pavel Zemčík</a>,
+						<a href="http://www.fit.vutbr.cz/~cadik">Martin Čadík</a>
+					</p>
+				</div>
+				<p><b>Experiments with Real Images</b></p>
+				<p>
+					The proposed method was tested using real-world images to show it works also in practice. The images from the <a href="http://www.robots.ox.ac.uk/~vgg/data/data-mview.html">Multiview Dataset</a> of the Visual Geometry Group, University of Oxford were used.
+				</p>
+				<p>
+					This dataset contains indoor and outdoor image sequences of buildings with extracted 2D line segments and their reconstructed positions in 3D. The correspondences between the 3D and 2D line segments and camera projection matrices are available as well.
+				</p>
+				<p>
+					The state-of-the-art as well as our proposed method (<b>Mirzaei</b>, <b>Zhang</b>, <b>ours</b>) were run on different image sequences and the estimated camera poses were used to reproject the 3D lines onto the images to validate the results.
+				</p>
+					<br />
+					<a name="top"></a>
+					<b>Image sequences:</b>
+					<ul>
+						<a href="#Merton-College-I"><li>Merton College I</li></a>
+						<a href="#Merton-College-II"><li>Merton College II</li></a>
+						<a href="#Merton-College-III"><li>Merton College III</li></a>
+						<a href="#University-Library"><li>University Library</li></a>
+						<a href="#Wadham-College"><li>Wadham College</li></a>
+						<a href="#Corridor"><li>Corridor</li></a>
+					</ul>
+				</p>
+				
+				
+				<div>
+					<a name="Merton-College-I"></a>
+					<h3>Merton College I</h3>
+					<table class="maintable"><!-- MERTON COLLEGE I -->
+						<tr>
+							<td width="10%"><b>Image Nr.</b></td>
+							<td><b>Ground Truth</b><br />
+								<table class="results">
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+								</table></td>
+							<td>
+								<b>Mirzaei</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>1.610 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.511 m</small></td>
+									</tr>
+								</table>
+							</td>
+							<td><b>Zhang</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.401 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.115 m</small></td>
+									</tr>
+								</table></td>
+							<td><b>ours</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.195 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.128 m</small></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr>
+							<td>001</td>
+							<td><a href="Merton-College-I/001_GT.jpg"><img src="Merton-College-I/thumbs/001_GT.png"></a></td>
+							<td><a href="Merton-College-I/001_Mirzaei.jpg"><img src="Merton-College-I/thumbs/001_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-I/001_Zhang.jpg"><img src="Merton-College-I/thumbs/001_Zhang.png"></a></td>
+							<td><a href="Merton-College-I/001_ours.jpg"><img src="Merton-College-I/thumbs/001_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>002</td>
+							<td><a href="Merton-College-I/002_GT.jpg"><img src="Merton-College-I/thumbs/002_GT.png"></a></td>
+							<td><a href="Merton-College-I/002_Mirzaei.jpg"><img src="Merton-College-I/thumbs/002_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-I/002_Zhang.jpg"><img src="Merton-College-I/thumbs/002_Zhang.png"></a></td>
+							<td><a href="Merton-College-I/002_ours.jpg"><img src="Merton-College-I/thumbs/002_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>003</td>
+							<td><a href="Merton-College-I/003_GT.jpg"><img src="Merton-College-I/thumbs/003_GT.png"></a></td>
+							<td><a href="Merton-College-I/003_Mirzaei.jpg"><img src="Merton-College-I/thumbs/003_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-I/003_Zhang.jpg"><img src="Merton-College-I/thumbs/003_Zhang.png"></a></td>
+							<td><a href="Merton-College-I/003_ours.jpg"><img src="Merton-College-I/thumbs/003_ours.png"></a></td>
+						</tr>
+					</table>
+					<p><a href="#top">top</a></p>
+					
+					<a name="Merton-College-II"></a>
+					<h3>Merton College II</h3>
+					<table class="maintable"><!-- MERTON COLLEGE II -->
+						<tr>
+							<td width="10%"><b>Image Nr.</b></td>
+							<td><b>Ground Truth</b><br />
+								<table class="results">
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+								</table></td>
+							<td>
+								<b>Mirzaei</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>22.477 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>&nbsp;&nbsp;5.234 m</small></td>
+									</tr>
+								</table>
+							</td>
+							<td><b>Zhang</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.676 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.336 m</small></td>
+									</tr>
+								</table></td>
+							<td><b>ours</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.218 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.151 m</small></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr>
+							<td>001</td>
+							<td><a href="Merton-College-II/001_GT.jpg"><img src="Merton-College-II/thumbs/001_GT.png"></a></td>
+							<td><a href="Merton-College-II/001_Mirzaei.jpg"><img src="Merton-College-II/thumbs/001_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-II/001_Zhang.jpg"><img src="Merton-College-II/thumbs/001_Zhang.png"></a></td>
+							<td><a href="Merton-College-II/001_ours.jpg"><img src="Merton-College-II/thumbs/001_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>002</td>
+							<td><a href="Merton-College-II/002_GT.jpg"><img src="Merton-College-II/thumbs/002_GT.png"></a></td>
+							<td><a href="Merton-College-II/002_Mirzaei.jpg"><img src="Merton-College-II/thumbs/002_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-II/002_Zhang.jpg"><img src="Merton-College-II/thumbs/002_Zhang.png"></a></td>
+							<td><a href="Merton-College-II/002_ours.jpg"><img src="Merton-College-II/thumbs/002_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>003</td>
+							<td><a href="Merton-College-II/003_GT.jpg"><img src="Merton-College-II/thumbs/003_GT.png"></a></td>
+							<td><a href="Merton-College-II/003_Mirzaei.jpg"><img src="Merton-College-II/thumbs/003_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-II/003_Zhang.jpg"><img src="Merton-College-II/thumbs/003_Zhang.png"></a></td>
+							<td><a href="Merton-College-II/003_ours.jpg"><img src="Merton-College-II/thumbs/003_ours.png"></a></td>
+						</tr>
+					</table>
+					<p><a href="#top">top</a></p>
+					
+					<a name="Merton-College-III"></a>
+					<h3>Merton College III</h3>
+					<table class="maintable"><!-- MERTON COLLEGE III -->
+						<tr>
+							<td width="10%"><b>Image Nr.</b></td>
+							<td><b>Ground Truth</b><br />
+								<table class="results">
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+								</table></td>
+							<td>
+								<b>Mirzaei</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>1.667 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.608 m</small></td>
+									</tr>
+								</table>
+							</td>
+							<td><b>Zhang</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.859 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.436 m</small></td>
+									</tr>
+								</table></td>
+							<td><b>ours</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.223 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.101 m</small></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr>
+							<td>001</td>
+							<td><a href="Merton-College-III/001_GT.jpg"><img src="Merton-College-III/thumbs/001_GT.png"></a></td>
+							<td><a href="Merton-College-III/001_Mirzaei.jpg"><img src="Merton-College-III/thumbs/001_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-III/001_Zhang.jpg"><img src="Merton-College-III/thumbs/001_Zhang.png"></a></td>
+							<td><a href="Merton-College-III/001_ours.jpg"><img src="Merton-College-III/thumbs/001_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>002</td>
+							<td><a href="Merton-College-III/002_GT.jpg"><img src="Merton-College-III/thumbs/002_GT.png"></a></td>
+							<td><a href="Merton-College-III/002_Mirzaei.jpg"><img src="Merton-College-III/thumbs/002_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-III/002_Zhang.jpg"><img src="Merton-College-III/thumbs/002_Zhang.png"></a></td>
+							<td><a href="Merton-College-III/002_ours.jpg"><img src="Merton-College-III/thumbs/002_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>003</td>
+							<td><a href="Merton-College-III/003_GT.jpg"><img src="Merton-College-III/thumbs/003_GT.png"></a></td>
+							<td><a href="Merton-College-III/003_Mirzaei.jpg"><img src="Merton-College-III/thumbs/003_Mirzaei.png"></a></td>
+							<td><a href="Merton-College-III/003_Zhang.jpg"><img src="Merton-College-III/thumbs/003_Zhang.png"></a></td>
+							<td><a href="Merton-College-III/003_ours.jpg"><img src="Merton-College-III/thumbs/003_ours.png"></a></td>
+						</tr>
+					</table>
+					<p><a href="#top">top</a></p>
+					
+					<a name="University-Library"></a>
+					<h3>University Library</h3>
+					<table class="maintable"><!-- UNIVERSITY LIBRARY -->
+						<tr>
+							<td width="10%"><b>Image Nr.</b></td>
+							<td><b>Ground Truth</b><br />
+								<table class="results">
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+								</table></td>
+							<td>
+								<b>Mirzaei</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.837 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.423 m</small></td>
+									</tr>
+								</table>
+							</td>
+							<td><b>Zhang</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>1.558 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.833 m</small></td>
+									</tr>
+								</table></td>
+							<td><b>ours</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.189 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.138 m</small></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr>
+							<td>001</td>
+							<td><a href="University-Library/001_GT.jpg"><img src="University-Library/thumbs/001_GT.png"></a></td>
+							<td><a href="University-Library/001_Mirzaei.jpg"><img src="University-Library/thumbs/001_Mirzaei.png"></a></td>
+							<td><a href="University-Library/001_Zhang.jpg"><img src="University-Library/thumbs/001_Zhang.png"></a></td>
+							<td><a href="University-Library/001_ours.jpg"><img src="University-Library/thumbs/001_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>002</td>
+							<td><a href="University-Library/002_GT.jpg"><img src="University-Library/thumbs/002_GT.png"></a></td>
+							<td><a href="University-Library/002_Mirzaei.jpg"><img src="University-Library/thumbs/002_Mirzaei.png"></a></td>
+							<td><a href="University-Library/002_Zhang.jpg"><img src="University-Library/thumbs/002_Zhang.png"></a></td>
+							<td><a href="University-Library/002_ours.jpg"><img src="University-Library/thumbs/002_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>003</td>
+							<td><a href="University-Library/003_GT.jpg"><img src="University-Library/thumbs/003_GT.png"></a></td>
+							<td><a href="University-Library/003_Mirzaei.jpg"><img src="University-Library/thumbs/003_Mirzaei.png"></a></td>
+							<td><a href="University-Library/003_Zhang.jpg"><img src="University-Library/thumbs/003_Zhang.png"></a></td>
+							<td><a href="University-Library/003_ours.jpg"><img src="University-Library/thumbs/003_ours.png"></a></td>
+						</tr>
+					</table>
+					<p><a href="#top">top</a></p>
+					
+					<a name="Wadham-College"></a>
+					<h3>Wadham College</h3>
+					<table class="maintable"><!-- WADHAM COLLEGE -->
+						<tr>
+							<td width="10%"><b>Image Nr.</b></td>
+							<td><b>Ground Truth</b><br />
+								<table class="results">
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+								</table></td>
+							<td>
+								<b>Mirzaei</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>21.778 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>&nbsp;&nbsp;3.907 m</small></td>
+									</tr>
+								</table>
+							</td>
+							<td><b>Zhang</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.103 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.047 m</small></td>
+									</tr>
+								</table></td>
+							<td><b>ours</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.086 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.072 m</small></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr>
+							<td>001</td>
+							<td><a href="Wadham-College/001_GT.jpg"><img src="Wadham-College/thumbs/001_GT.png"></a></td>
+							<td><a href="Wadham-College/001_Mirzaei.jpg"><img src="Wadham-College/thumbs/001_Mirzaei.png"></a></td>
+							<td><a href="Wadham-College/001_Zhang.jpg"><img src="Wadham-College/thumbs/001_Zhang.png"></a></td>
+							<td><a href="Wadham-College/001_ours.jpg"><img src="Wadham-College/thumbs/001_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>002</td>
+							<td><a href="Wadham-College/002_GT.jpg"><img src="Wadham-College/thumbs/002_GT.png"></a></td>
+							<td><a href="Wadham-College/002_Mirzaei.jpg"><img src="Wadham-College/thumbs/002_Mirzaei.png"></a></td>
+							<td><a href="Wadham-College/002_Zhang.jpg"><img src="Wadham-College/thumbs/002_Zhang.png"></a></td>
+							<td><a href="Wadham-College/002_ours.jpg"><img src="Wadham-College/thumbs/002_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>003</td>
+							<td><a href="Wadham-College/003_GT.jpg"><img src="Wadham-College/thumbs/003_GT.png"></a></td>
+							<td><a href="Wadham-College/003_Mirzaei.jpg"><img src="Wadham-College/thumbs/003_Mirzaei.png"></a></td>
+							<td><a href="Wadham-College/003_Zhang.jpg"><img src="Wadham-College/thumbs/003_Zhang.png"></a></td>
+							<td><a href="Wadham-College/003_ours.jpg"><img src="Wadham-College/thumbs/003_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>004</td>
+							<td><a href="Wadham-College/004_GT.jpg"><img src="Wadham-College/thumbs/004_GT.png"></a></td>
+							<td><a href="Wadham-College/004_Mirzaei.jpg"><img src="Wadham-College/thumbs/004_Mirzaei.png"></a></td>
+							<td><a href="Wadham-College/004_Zhang.jpg"><img src="Wadham-College/thumbs/004_Zhang.png"></a></td>
+							<td><a href="Wadham-College/004_ours.jpg"><img src="Wadham-College/thumbs/004_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>005</td>
+							<td><a href="Wadham-College/005_GT.jpg"><img src="Wadham-College/thumbs/005_GT.png"></a></td>
+							<td><a href="Wadham-College/005_Mirzaei.jpg"><img src="Wadham-College/thumbs/005_Mirzaei.png"></a></td>
+							<td><a href="Wadham-College/005_Zhang.jpg"><img src="Wadham-College/thumbs/005_Zhang.png"></a></td>
+							<td><a href="Wadham-College/005_ours.jpg"><img src="Wadham-College/thumbs/005_ours.png"></a></td>
+						</tr>
+					</table>
+					<p><a href="#top">top</a></p>
+					
+					<a name="Corridor"></a>
+					<h3>Corridor</h3>
+					<table class="maintable"><!-- CORRIDOR -->
+						<tr>
+							<td width="10%"><b>Image Nr.</b></td>
+							<td><b>Ground Truth</b><br />
+								<table class="results">
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+									<tr>
+										<td><small>&nbsp;</small></td>
+										<td><small>&nbsp;</small></td>
+									</tr>
+								</table></td>
+							<td>
+								<b>Mirzaei</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>15.510 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>&nbsp;&nbsp;1.510 m</small></td>
+									</tr>
+								</table>
+							</td>
+							<td><b>Zhang</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.029 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.008 m</small></td>
+									</tr>
+								</table></td>
+							<td><b>ours</b><br />
+								<table class="results">
+									<tr>
+										<td><small>mean orient. &nbsp; error:</small></td>
+										<td><small>0.034 °</small></td>
+									</tr>
+									<tr>
+										<td><small>mean position error:</small></td>
+										<td><small>0.013 m</small></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr>
+							<td>000</td>
+							<td><a href="Corridor/bt.000_GT.jpg"><img src="Corridor/thumbs/bt.000_GT.png"></a></td>
+							<td><a href="Corridor/bt.000_Mirzaei.jpg"><img src="Corridor/thumbs/bt.000_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.000_Zhang.jpg"><img src="Corridor/thumbs/bt.000_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.000_ours.jpg"><img src="Corridor/thumbs/bt.000_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>001</td>
+							<td><a href="Corridor/bt.001_GT.jpg"><img src="Corridor/thumbs/bt.001_GT.png"></a></td>
+							<td><a href="Corridor/bt.001_Mirzaei.jpg"><img src="Corridor/thumbs/bt.001_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.001_Zhang.jpg"><img src="Corridor/thumbs/bt.001_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.001_ours.jpg"><img src="Corridor/thumbs/bt.001_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>002</td>
+							<td><a href="Corridor/bt.002_GT.jpg"><img src="Corridor/thumbs/bt.002_GT.png"></a></td>
+							<td><a href="Corridor/bt.002_Mirzaei.jpg"><img src="Corridor/thumbs/bt.002_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.002_Zhang.jpg"><img src="Corridor/thumbs/bt.002_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.002_ours.jpg"><img src="Corridor/thumbs/bt.002_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>003</td>
+							<td><a href="Corridor/bt.003_GT.jpg"><img src="Corridor/thumbs/bt.003_GT.png"></a></td>
+							<td><a href="Corridor/bt.003_Mirzaei.jpg"><img src="Corridor/thumbs/bt.003_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.003_Zhang.jpg"><img src="Corridor/thumbs/bt.003_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.003_ours.jpg"><img src="Corridor/thumbs/bt.003_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>004</td>
+							<td><a href="Corridor/bt.004_GT.jpg"><img src="Corridor/thumbs/bt.004_GT.png"></a></td>
+							<td><a href="Corridor/bt.004_Mirzaei.jpg"><img src="Corridor/thumbs/bt.004_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.004_Zhang.jpg"><img src="Corridor/thumbs/bt.004_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.004_ours.jpg"><img src="Corridor/thumbs/bt.004_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>005</td>
+							<td><a href="Corridor/bt.005_GT.jpg"><img src="Corridor/thumbs/bt.005_GT.png"></a></td>
+							<td><a href="Corridor/bt.005_Mirzaei.jpg"><img src="Corridor/thumbs/bt.005_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.005_Zhang.jpg"><img src="Corridor/thumbs/bt.005_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.005_ours.jpg"><img src="Corridor/thumbs/bt.005_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>006</td>
+							<td><a href="Corridor/bt.006_GT.jpg"><img src="Corridor/thumbs/bt.006_GT.png"></a></td>
+							<td><a href="Corridor/bt.006_Mirzaei.jpg"><img src="Corridor/thumbs/bt.006_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.006_Zhang.jpg"><img src="Corridor/thumbs/bt.006_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.006_ours.jpg"><img src="Corridor/thumbs/bt.006_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>007</td>
+							<td><a href="Corridor/bt.007_GT.jpg"><img src="Corridor/thumbs/bt.007_GT.png"></a></td>
+							<td><a href="Corridor/bt.007_Mirzaei.jpg"><img src="Corridor/thumbs/bt.007_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.007_Zhang.jpg"><img src="Corridor/thumbs/bt.007_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.007_ours.jpg"><img src="Corridor/thumbs/bt.007_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>008</td>
+							<td><a href="Corridor/bt.008_GT.jpg"><img src="Corridor/thumbs/bt.008_GT.png"></a></td>
+							<td><a href="Corridor/bt.008_Mirzaei.jpg"><img src="Corridor/thumbs/bt.008_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.008_Zhang.jpg"><img src="Corridor/thumbs/bt.008_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.008_ours.jpg"><img src="Corridor/thumbs/bt.008_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>009</td>
+							<td><a href="Corridor/bt.009_GT.jpg"><img src="Corridor/thumbs/bt.009_GT.png"></a></td>
+							<td><a href="Corridor/bt.009_Mirzaei.jpg"><img src="Corridor/thumbs/bt.009_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.009_Zhang.jpg"><img src="Corridor/thumbs/bt.009_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.009_ours.jpg"><img src="Corridor/thumbs/bt.009_ours.png"></a></td>
+						</tr>
+						<tr>
+							<td>010</td>
+							<td><a href="Corridor/bt.010_GT.jpg"><img src="Corridor/thumbs/bt.010_GT.png"></a></td>
+							<td><a href="Corridor/bt.010_Mirzaei.jpg"><img src="Corridor/thumbs/bt.010_Mirzaei.png"></a></td>
+							<td><a href="Corridor/bt.010_Zhang.jpg"><img src="Corridor/thumbs/bt.010_Zhang.png"></a></td>
+							<td><a href="Corridor/bt.010_ours.jpg"><img src="Corridor/thumbs/bt.010_ours.png"></a></td>
+						</tr>
+					</table>
+					<p><a href="#top">top</a></p>
+				</div>
+				
+			</div>
+		</div>
+	</body>
+</html>
+
