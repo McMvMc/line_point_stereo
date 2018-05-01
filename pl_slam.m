@@ -56,9 +56,6 @@ for idx=start_idx:step_size:size(img_list_l)
         cur_pt_ids = 1:size(matched_pts_l, 1);
         global_descriptor = binaryFeatures(desc_l.Features(validity,:));
         
-        % prev_matched_pts_l = matched_pts_l;
-        % prev_matched_pts_r = matched_pts_r;
-        
         % world to cur cam coord
         [R_l_g, t_l_g] = switch_coord_sys(O_l_g, P_l_g);
         [R_r_g, t_r_g] = switch_coord_sys(O_r_g, P_r_g);
@@ -162,8 +159,6 @@ for idx=start_idx:step_size:size(img_list_l)
 
 
 % ---- triangulate ---- %
-    % [prev_O_r_g, prev_P_r_g] = right_from_left_cam(prev_O_l_g, prev_P_l_g, ...
-    %                                                     R_r_gt_rel, t_r_gt_rel);
     
     if need_traingulate
         % world to cur cam coord
