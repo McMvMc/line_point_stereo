@@ -14,14 +14,14 @@ dist = abs(dist) < 1;
 
 dx = (pts_l(:, 1) - pts_r(:,1)');
 dx = dx > 0 & dx < 100;
-dy_l = abs(pts_l(1:num_l, 2) - pts_l(num_l+1:end, 2)) < 2;
-dy_l = [dy_l; dy_l];
-dy_r = abs(pts_r(1:num_r, 2) - pts_r(num_r+1:end, 2)) < 2;
-dy_r = [dy_r; dy_r];
+% dy_l = abs(pts_l(1:num_l, 2) - pts_l(num_l+1:end, 2)) < 2;
+% dy_l = [dy_l; dy_l];
+% dy_r = abs(pts_r(1:num_r, 2) - pts_r(num_r+1:end, 2)) < 2;
+% dy_r = [dy_r; dy_r];
 
 dist = dist & dx;
-dist(dy_l, :) = 0;
-dist(:, dy_r) = 0;
+% dist(dy_l, :) = 0;
+% dist(:, dy_r) = 0;
 
 dist = (dist(1:num_l, 1:num_r) & dist(num_l+1:end, num_r+1:end)) | ...
     (dist(1:num_l, num_r+1:end) & dist(num_l+1:end, 1:num_r));
@@ -71,6 +71,16 @@ dis_sig = sqrt(var(dis));
 
 valid = dis < dis_m + dis_sig;
 match = match(valid, :);
+
+% filter out lines parallel to the epipolar lines
+
+l = normr(epi_l(match(:,1),1:2));
+v = normr(lines_r(match(:,2),1:2) - lines_r(match(:,2),3:4));
+angle = sum(l.*v, 2);
+valid = abs(angle) > 0.1;
+match = match(valid, :);
+
+
 
 
 end

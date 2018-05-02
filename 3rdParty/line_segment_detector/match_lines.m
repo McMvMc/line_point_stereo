@@ -40,6 +40,9 @@ for i = 1:size(target, 1)
     end
 end
 
+match = [(1:size(target, 1))', match];
+match = match(match(:,2) ~= 0, :);
+
 end
 
 
