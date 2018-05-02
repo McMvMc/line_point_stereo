@@ -3,9 +3,9 @@ addpath(YAML_LIB_PATH);
 
 img_path_l = '~/Desktop/833/project/mav0/cam0/data/';
 img_path_r = '~/Desktop/833/project/mav0/cam1/data/';
-step_size = 5;
-start_idx = 950;
-redetect_thresh = 150;
+step_size = 3;
+start_idx = 300;
+redetect_thresh = 200;
 down_scale = 1;
 
 % reads out body frame O P, and convert to R t (left to right)
@@ -53,11 +53,9 @@ for idx=start_idx:step_size:size(img_list_l)
         [desc_l, matched_pts_l] = detect_points(im_l);
         matched_pts_l = matched_pts_l.Location;
         [matched_pts_l, matched_pts_r, validity] = track_points(matched_pts_l, ...
-                                                        im_l, im_r);
-        cur_pt_ids = 1:size(matched_pts_l, 1);
-        global_descriptor = binaryFeatures(desc_l.Features(validity,:));
+                                im_l, im_r, false, [], []);
         
-        % world to cur cam coord
+        % triangulate
         [R_l_g, t_l_g] = switch_coord_sys(O_l_g, P_l_g);
         [R_r_g, t_r_g] = switch_coord_sys(O_r_g, P_r_g);
 
@@ -66,13 +64,19 @@ for idx=start_idx:step_size:size(img_list_l)
 
         [cur_3D_pts, err] = triangulate(matched_pts_l, matched_pts_r,...
                                                 camMatrix_l,camMatrix_r);
+                                            
+        % store database
+        cur_pt_ids = 1:size(matched_pts_l, 1);
+        global_descriptor = binaryFeatures(desc_l.Features(validity,:));
+        global_3D_pts = cur_3D_pts;
     else
         % track between frames and between stereo
         % filters points
         [prev_matched_pts_l_filt, matched_pts_l, valid_l] = ...
-                                    track_points(prev_matched_pts_l, prev_im_l, im_l);
+                                    track_points(prev_matched_pts_l, prev_im_l, im_l,...
+                                             true, cur_pt_ids, global_descriptor);
         [matched_pts_l, matched_pts_r, valid_r] = track_points(matched_pts_l, ...
-                                                        im_l, im_r);
+                                 im_l, im_r,  true, cur_pt_ids, global_descriptor);
         prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);    
 
         size(matched_pts_l, 1)
@@ -108,10 +112,10 @@ for idx=start_idx:step_size:size(img_list_l)
             [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
             new_prev_matched_pts_r, new_matched_pts_l, new_matched_pts_r, ...
             new_cur_pt_ids, cur_3D_pts, cur_pt_ids, global_descriptor, ...
-            matched_pts_l, matched_pts_r]...
+            matched_pts_l, matched_pts_r, n_old_match]...
                  = redetect_points(prev_im_l, prev_im_r, im_l, im_r, ...
                     prev_matched_pts_l, matched_pts_l, matched_pts_r, ...
-                    cur_3D_pts, cur_pt_ids, global_descriptor);
+                    cur_3D_pts, cur_pt_ids, global_descriptor, global_3D_pts);
         end
         
     end
@@ -152,6 +156,10 @@ for idx=start_idx:step_size:size(img_list_l)
                               cam_l_param, cam_r_param, ...
                               cur_3D_pts, R_r_gt_rel, t_r_gt_rel);
         [O_r_g, P_r_g] = right_from_left_cam(O_l_g, P_l_g, R_r_gt_rel, t_r_gt_rel);
+        
+        % update global database
+        global_3D_pts(cur_pt_ids,:) = cur_3D_pts;
+        
         
         % visualization and comparison
         % compare before and after optimization
@@ -196,6 +204,7 @@ for idx=start_idx:step_size:size(img_list_l)
         [new_cur_3D_pts, err] = triangulate(new_matched_pts_l, new_matched_pts_r,...
                                                 camMatrix_l,camMatrix_r);
         cur_3D_pts = [cur_3D_pts; new_cur_3D_pts];
+        global_3D_pts = [global_3D_pts; new_cur_3D_pts];
         cur_pt_ids = [cur_pt_ids new_cur_pt_ids];
         matched_pts_l = [matched_pts_l; new_matched_pts_l];
         matched_pts_r = [matched_pts_r; new_matched_pts_r];
@@ -209,6 +218,7 @@ for idx=start_idx:step_size:size(img_list_l)
                             O_l_g, P_l_g, R_r_gt_rel, t_r_gt_rel,...
                             tmp_prev_matched_pts_l, tmp_prev_matched_pts_r,...
                             tmp_matched_pts_l, tmp_matched_pts_r)
+                        
     end
     
 % ---- triangulate ---- %
@@ -216,7 +226,7 @@ for idx=start_idx:step_size:size(img_list_l)
     toc()
 
 % ---- visualize ---- %
-    draw_map(cur_3D_pts, O_l_g, P_l_g, O_r_g, P_r_g);
+    draw_map(global_3D_pts, O_l_g, P_l_g, O_r_g, P_r_g);
 % ---- visualize ---- %
 
 

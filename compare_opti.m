@@ -21,6 +21,8 @@ function compare_opti(cur_3D_pts, cam_l_param, cam_r_param, prev_im_l, prev_im_r
                                          cam_r_param.IntrinsicMatrix', prev_R_r_g, prev_t_r_g)';
 
     figure(2);
+    clf(2);
+    figure(2);
     subplot(2, 2, 1), imshow(prev_im_l), hold on
     plot(prev_matched_pts_l(:,1), prev_matched_pts_l(:,2), 'b+');
     plot(proj_prev_l(:,1), proj_prev_l(:,2), 'r+');

@@ -92,7 +92,6 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
                       }
               }
               (mask+mask_count)->next = NULL;
-              
           }
       }
   }
@@ -102,6 +101,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
       // calculate frame size
       int N = (int) ceil( Y * scale );
       int M = (int) ceil( X * scale );
+
       mask = (struct coorlist *) calloc( (size_t) ((N-1)*(M-1)), sizeof(struct coorlist) );
       int x, y, adr;
       for(y=0;y<N-1;y++)
@@ -123,8 +123,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
                                NULL, NULL, NULL );
   /*out = lsd(&n,img,X,Y);*/
   
-  // clear memory
-  free( (void *) mask );
+
 
   plhs[0] = mxCreateDoubleMatrix( 7, n, mxREAL ); 
   out_ptr = mxGetPr(plhs[0]);
@@ -132,6 +131,10 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
   for (i = 0; i < n; i++)
 	for (j = 0; j < 7; j++)
 		out_ptr[7*i + j] = out[7*i + j];
+  
+  // clear memory
+  free( (void *) mask );
+  free( (void *) out );
   
   return;
 }
