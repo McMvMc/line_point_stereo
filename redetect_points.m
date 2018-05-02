@@ -33,10 +33,11 @@ function [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
     new_prev_matched_pts_l = new_prev_matched_pts_l(valid_r,:);
     new_prev_matched_pts_r = new_prev_matched_pts_r(valid_l,:);
     new_prev_matched_pts_r = new_prev_matched_pts_r(valid_r,:);
-    new_prev_desc_l = new_prev_desc_l.Features(prev_valid_r,:);
+%     new_prev_desc_l = new_prev_desc_l.Features(prev_valid_r,:);
+    new_prev_desc_l = new_prev_desc_l(prev_valid_r,:);
     new_prev_desc_l = new_prev_desc_l(valid_l,:);
     new_prev_desc_l = new_prev_desc_l(valid_r,:);
-    new_prev_desc_l = binaryFeatures(new_prev_desc_l);
+%     new_prev_desc_l = binaryFeatures(new_prev_desc_l);
 
     % find correspondence and new features
     [match_idx_pairs,~] = matchFeatures(new_prev_desc_l, global_descriptor,...
@@ -66,14 +67,15 @@ function [prev_matched_pts_l, prev_matched_pts_r, new_prev_matched_pts_l, ...
     n_old_match = size(new_old_feat_ids,2);
     
     % store new features
-    last_id = size(global_descriptor.Features, 1);
+%     last_id = size(global_descriptor.Features, 1);
+    last_id = size(global_descriptor, 1);
     
     new_cur_pt_ids = last_id+1:(last_id+size(new_feat_ids, 2));
     new_matched_pts_l = new_matched_pts_l(new_feat_ids, :);
     new_matched_pts_r = new_matched_pts_r(new_feat_ids, :);
     new_prev_matched_pts_l = new_prev_matched_pts_l(new_feat_ids, :);
     new_prev_matched_pts_r = new_prev_matched_pts_r(new_feat_ids, :);
-    global_descriptor = binaryFeatures([global_descriptor.Features;...
-                                    new_prev_desc_l.Features(new_feat_ids, :)]);
-    
+%     global_descriptor = binaryFeatures([global_descriptor.Features;...
+%                                     new_prev_desc_l.Features(new_feat_ids, :)]);
+    global_descriptor = [global_descriptor; new_prev_desc_l(new_feat_ids, :)];
 end

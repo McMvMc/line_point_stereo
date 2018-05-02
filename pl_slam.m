@@ -4,8 +4,8 @@ addpath(YAML_LIB_PATH);
 img_path_l = '../mav0/cam0/data/';
 img_path_r = '../mav0/cam1/data/';
 step_size = 3;
-start_idx = 1300;
-redetect_thresh = 200;
+start_idx = 2000;
+redetect_thresh = 600;
 down_scale = 1;
 
 % reads out body frame O P, and convert to R t (left to right)
@@ -72,11 +72,13 @@ for idx=start_idx:step_size:size(img_list_l)
                                             
         % store database
         cur_pt_ids = 1:size(matched_pts_l, 1);
-        global_descriptor = binaryFeatures(desc_l.Features(validity,:));
+%         global_descriptor = binaryFeatures(desc_l.Features(validity,:));
+        global_descriptor = desc_l(validity,:);
         global_3D_pts = cur_3D_pts;
     else
         % track between frames and between stereo
         % filters points
+        
         use_matching = true;
         cur_pt_ids_filt = cur_pt_ids;
         [prev_matched_pts_l_filt, matched_pts_l, valid_l] = ...
@@ -133,7 +135,14 @@ for idx=start_idx:step_size:size(img_list_l)
     end
 % ---- track features ---- %
 
-
+    if idx ~=start_idx
+        id_s = cur_pt_ids;
+        pt_3d_s = cur_3D_pts;
+        m_l_s = matched_pts_l;
+        m_r_s = matched_pts_r;
+        p_m_l_s = prev_matched_pts_l;
+        p_m_r_s = prev_matched_pts_r;
+    end
 % ---- track camera pose ---- %
     if idx ~= start_idx
         
@@ -231,13 +240,35 @@ for idx=start_idx:step_size:size(img_list_l)
     toc()
 
 % ---- visualize ---- %
-    draw_map(global_3D_pts, O_l_g, P_l_g, O_r_g, P_r_g);
+%     draw_map(global_3D_pts, O_l_g, P_l_g, O_r_g, P_r_g);
+    draw_map(cur_3D_pts, O_l_g, P_l_g, O_r_g, P_r_g);
 % ---- visualize ---- %
 
 
 % ---- bundle adjustment ---- %    
     % [xyzRefinedPoints,refinedPoses] = bundleAdjustment(xyzPoints,pointTracks,cameraPoses,cam_l_param);
 % ---- bundle adjustment ---- %    
+
+    if idx ~=start_idx
+        string(idx)+'--------------'
+        id_e = cur_pt_ids(1:5)
+        id_s_idx = [];
+        for id = id_e
+            id_s_idx = [id_s_idx find(id_s==id)];
+        end
+        pt_3d_s(id_s_idx,:)
+        pt_3d_e = cur_3D_pts(1:5, :)
+        m_l_s(id_s_idx,:)
+        m_l_e = matched_pts_l(1:5, :)
+        m_r_s(id_s_idx,:)
+        m_r_e = matched_pts_r(1:5, :)
+        p_m_l_s(id_s_idx,:)
+        p_m_l_e = prev_matched_pts_l(1:5, :)
+        p_m_r_s(id_s_idx,:)
+        p_m_r_e = prev_matched_pts_r(1:5, :)
+        string(idx)+'--------------'
+    end
+
 
 
 % ---- update variables ---- %    
