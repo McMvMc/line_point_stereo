@@ -72,12 +72,16 @@ for idx=start_idx:step_size:size(img_list_l)
     else
         % track between frames and between stereo
         % filters points
+        use_matching = true;
+        cur_pt_ids_filt = cur_pt_ids;
         [prev_matched_pts_l_filt, matched_pts_l, valid_l] = ...
                                     track_points(prev_matched_pts_l, prev_im_l, im_l,...
-                                             true, cur_pt_ids, global_descriptor);
+                                     use_matching, cur_pt_ids_filt, global_descriptor);
+        cur_pt_ids_filt = cur_pt_ids_filt(valid_l);
         [matched_pts_l, matched_pts_r, valid_r] = track_points(matched_pts_l, ...
-                                 im_l, im_r,  true, cur_pt_ids, global_descriptor);
-        prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);    
+                         im_l, im_r,  use_matching, cur_pt_ids_filt, global_descriptor);
+        prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);   
+        cur_pt_ids_filt = cur_pt_ids_filt(valid_r);
 
         size(matched_pts_l, 1)
         if size(matched_pts_l, 1) < redetect_thresh
@@ -100,8 +104,7 @@ for idx=start_idx:step_size:size(img_list_l)
             prev_matched_pts_l = prev_matched_pts_l_filt;
             cur_3D_pts = cur_3D_pts(valid_l, :);
             cur_3D_pts = cur_3D_pts(valid_r, :);
-            cur_pt_ids = cur_pt_ids(valid_l);
-            cur_pt_ids = cur_pt_ids(valid_r);  
+            cur_pt_ids = cur_pt_ids_filt;  
         else
             continue
         end
@@ -129,18 +132,6 @@ for idx=start_idx:step_size:size(img_list_l)
                                                     cur_3D_pts,cam_l_param);
         
         P_l_g = P_l_g';
-        
-        % [R_l_g, t_l_g] = switch_coord_sys(O_l_g, P_l_g);
-        % proj_l = project_to_cam([cur_3D_pts'; ones(1,size(cur_3D_pts,1))], ...
-        %                                  cam_l_param.IntrinsicMatrix', R_l_g, t_l_g)';
-        % F_reproj_err = median(vecnorm(proj_l-matched_pts_l,2,2));
-        % error_diff = H_reproj_err - F_reproj_err        
-        % if error_diff >3
-        %     prev_matched_pts_l = prev_matched_pts_l_filt;
-        %     matched_pts_l = matched_pts_l_filt;
-        % else
-        %     continue
-        % end
         
         cur_3D_pts = cur_3D_pts(inlier_idx, :);
         cur_pt_ids = cur_pt_ids(inlier_idx);
