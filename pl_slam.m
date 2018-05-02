@@ -1,8 +1,8 @@
-YAML_LIB_PATH = '~/YAMLMatlab_0.4.3';
+YAML_LIB_PATH = '3rdParty/YAMLMatlab_0.4.3';
 addpath(YAML_LIB_PATH);
 
-img_path_l = '~/Desktop/833/project/mav0/cam0/data/';
-img_path_r = '~/Desktop/833/project/mav0/cam1/data/';
+img_path_l = '../mav0/cam0/data/';
+img_path_r = '../mav0/cam1/data/';
 step_size = 3;
 start_idx = 300;
 redetect_thresh = 200;
@@ -23,6 +23,11 @@ cur_3D_pts = zeros(0,3);
 cur_pt_ids = zeros(0,1);
 
 camera_list = {camera_obj()};
+point_database= containers.Map('KeyType','double','ValueType','any');
+frame_cell=containers.Map('KeyType','double','ValueType','any');
+key_frame_index=[];
+updated_pts_id=[];
+key_frame_count=1;
 % ---- database ---- %
 
 

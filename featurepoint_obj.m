@@ -1,11 +1,17 @@
-classdef featurepoint_obj < handle
-	properties (Access = private)
+classdef featurepoint_obj <  matlab.mixin.Copyable
+	properties (Access = public)
         id=-1
         coor3 = zeros(3,1)    
-        pos_in_frame = containers.Map('KeyType','double','ValueType','any')
+        %pos_in_frame = containers.Map('KeyType','double','ValueType','any')
+        pos_in_frame
     end
     
     methods 
+        function obj = featurepoint_obj()
+            obj.pos_in_frame=containers.Map('KeyType','double','ValueType','any');
+         
+            
+         end
         function pos=lookup_in_frame(obj, frame_id)
             pos=obj.pos_in_frame(frame_id);
         end
