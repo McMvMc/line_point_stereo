@@ -1,10 +1,10 @@
-YAML_LIB_PATH = '~/YAMLMatlab_0.4.3';
+YAML_LIB_PATH = '3rdParty/YAMLMatlab_0.4.3';
 addpath(YAML_LIB_PATH);
 
-img_path_l = '~/Desktop/833/project/mav0/cam0/data/';
-img_path_r = '~/Desktop/833/project/mav0/cam1/data/';
+img_path_l = '../mav0/cam0/data/';
+img_path_r = '../mav0/cam1/data/';
 step_size = 3;
-start_idx = 300;
+start_idx = 1300;
 redetect_thresh = 200;
 down_scale = 1;
 
@@ -23,6 +23,11 @@ cur_3D_pts = zeros(0,3);
 cur_pt_ids = zeros(0,1);
 
 camera_list = {camera_obj()};
+point_database= containers.Map('KeyType','double','ValueType','any');
+frame_cell=containers.Map('KeyType','double','ValueType','any');
+key_frame_index=[];
+updated_pts_id=[];
+key_frame_count=1;
 % ---- database ---- %
 
 
@@ -72,12 +77,20 @@ for idx=start_idx:step_size:size(img_list_l)
     else
         % track between frames and between stereo
         % filters points
+        use_matching = true;
+        cur_pt_ids_filt = cur_pt_ids;
         [prev_matched_pts_l_filt, matched_pts_l, valid_l] = ...
                                     track_points(prev_matched_pts_l, prev_im_l, im_l,...
-                                             true, cur_pt_ids, global_descriptor);
+                                     use_matching, cur_pt_ids_filt, global_descriptor);
+        prev_matched_pts_r_filt = prev_matched_pts_r(valid_l, :);
+        
+        cur_pt_ids_filt = cur_pt_ids_filt(valid_l);
         [matched_pts_l, matched_pts_r, valid_r] = track_points(matched_pts_l, ...
-                                 im_l, im_r,  true, cur_pt_ids, global_descriptor);
-        prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);    
+                         im_l, im_r,  use_matching, cur_pt_ids_filt, global_descriptor);
+        prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);
+        prev_matched_pts_r_filt = prev_matched_pts_r_filt(valid_r, :);
+        
+        cur_pt_ids_filt = cur_pt_ids_filt(valid_r);
 
         size(matched_pts_l, 1)
         if size(matched_pts_l, 1) < redetect_thresh
@@ -96,12 +109,11 @@ for idx=start_idx:step_size:size(img_list_l)
                                                 matched_pts_l).^2,2)));
         if avg_disparity>5
             'camera moving'
-            
             prev_matched_pts_l = prev_matched_pts_l_filt;
+            prev_matched_pts_r = prev_matched_pts_r_filt;
             cur_3D_pts = cur_3D_pts(valid_l, :);
             cur_3D_pts = cur_3D_pts(valid_r, :);
-            cur_pt_ids = cur_pt_ids(valid_l);
-            cur_pt_ids = cur_pt_ids(valid_r);  
+            cur_pt_ids = cur_pt_ids_filt;  
         else
             continue
         end
@@ -125,22 +137,13 @@ for idx=start_idx:step_size:size(img_list_l)
 % ---- track camera pose ---- %
     if idx ~= start_idx
         
-        [O_l_g, P_l_g, inlier_idx] = estimateWorldCameraPose(matched_pts_l,...
+        [O_l_g, P_l_g, inlier_idx, status] = estimateWorldCameraPose(matched_pts_l,...
                                                     cur_3D_pts,cam_l_param);
-        
         P_l_g = P_l_g';
         
-        % [R_l_g, t_l_g] = switch_coord_sys(O_l_g, P_l_g);
-        % proj_l = project_to_cam([cur_3D_pts'; ones(1,size(cur_3D_pts,1))], ...
-        %                                  cam_l_param.IntrinsicMatrix', R_l_g, t_l_g)';
-        % F_reproj_err = median(vecnorm(proj_l-matched_pts_l,2,2));
-        % error_diff = H_reproj_err - F_reproj_err        
-        % if error_diff >3
-        %     prev_matched_pts_l = prev_matched_pts_l_filt;
-        %     matched_pts_l = matched_pts_l_filt;
-        % else
-        %     continue
-        % end
+        if status ~=0
+            
+        end
         
         cur_3D_pts = cur_3D_pts(inlier_idx, :);
         cur_pt_ids = cur_pt_ids(inlier_idx);
@@ -149,6 +152,8 @@ for idx=start_idx:step_size:size(img_list_l)
         prev_matched_pts_l = prev_matched_pts_l(inlier_idx, :);
         prev_matched_pts_r = prev_matched_pts_r(inlier_idx, :);
         
+        O_l_g = prev_O_l_g;
+        P_l_g = prev_P_l_g;
         [O_l_g, P_l_g, cur_3D_pts, fval] = refineRt_n_Pts(prev_O_l_g, prev_P_l_g,...
                               O_l_g, P_l_g,...
                               prev_matched_pts_l, prev_matched_pts_r,...

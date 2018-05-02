@@ -1,5 +1,5 @@
 classdef keyframe_obj < handle
-	properties (Access = private)
+	properties (Access = public)
         id=-1
         set='R'
         point_index=[]
@@ -12,6 +12,14 @@ classdef keyframe_obj < handle
     methods 
         function cur_R = get_R(obj)
             cur_R = obj.R;
+        end
+        function set_O(obj,O)
+            obj.O = O;
+            obj.R = O';
+        end
+        function set_P(obj,P)
+            obj.P = P;
+            obj.t = -P;
         end
         function cur_t = get_T(obj)
             cur_t = obj.t;
