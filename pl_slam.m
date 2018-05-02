@@ -4,7 +4,7 @@ addpath(YAML_LIB_PATH);
 img_path_l = '../mav0/cam0/data/';
 img_path_r = '../mav0/cam1/data/';
 step_size = 3;
-start_idx = 300;
+start_idx = 1300;
 redetect_thresh = 200;
 down_scale = 1;
 
@@ -82,10 +82,14 @@ for idx=start_idx:step_size:size(img_list_l)
         [prev_matched_pts_l_filt, matched_pts_l, valid_l] = ...
                                     track_points(prev_matched_pts_l, prev_im_l, im_l,...
                                      use_matching, cur_pt_ids_filt, global_descriptor);
+        prev_matched_pts_r_filt = prev_matched_pts_r(valid_l, :);
+        
         cur_pt_ids_filt = cur_pt_ids_filt(valid_l);
         [matched_pts_l, matched_pts_r, valid_r] = track_points(matched_pts_l, ...
                          im_l, im_r,  use_matching, cur_pt_ids_filt, global_descriptor);
-        prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);   
+        prev_matched_pts_l_filt = prev_matched_pts_l_filt(valid_r, :);
+        prev_matched_pts_r_filt = prev_matched_pts_r_filt(valid_r, :);
+        
         cur_pt_ids_filt = cur_pt_ids_filt(valid_r);
 
         size(matched_pts_l, 1)
@@ -105,8 +109,8 @@ for idx=start_idx:step_size:size(img_list_l)
                                                 matched_pts_l).^2,2)));
         if avg_disparity>5
             'camera moving'
-            
             prev_matched_pts_l = prev_matched_pts_l_filt;
+            prev_matched_pts_r = prev_matched_pts_r_filt;
             cur_3D_pts = cur_3D_pts(valid_l, :);
             cur_3D_pts = cur_3D_pts(valid_r, :);
             cur_pt_ids = cur_pt_ids_filt;  
@@ -133,10 +137,13 @@ for idx=start_idx:step_size:size(img_list_l)
 % ---- track camera pose ---- %
     if idx ~= start_idx
         
-        [O_l_g, P_l_g, inlier_idx] = estimateWorldCameraPose(matched_pts_l,...
+        [O_l_g, P_l_g, inlier_idx, status] = estimateWorldCameraPose(matched_pts_l,...
                                                     cur_3D_pts,cam_l_param);
-        
         P_l_g = P_l_g';
+        
+        if status ~=0
+            
+        end
         
         cur_3D_pts = cur_3D_pts(inlier_idx, :);
         cur_pt_ids = cur_pt_ids(inlier_idx);
@@ -145,6 +152,8 @@ for idx=start_idx:step_size:size(img_list_l)
         prev_matched_pts_l = prev_matched_pts_l(inlier_idx, :);
         prev_matched_pts_r = prev_matched_pts_r(inlier_idx, :);
         
+        O_l_g = prev_O_l_g;
+        P_l_g = prev_P_l_g;
         [O_l_g, P_l_g, cur_3D_pts, fval] = refineRt_n_Pts(prev_O_l_g, prev_P_l_g,...
                               O_l_g, P_l_g,...
                               prev_matched_pts_l, prev_matched_pts_r,...
