@@ -1,0 +1,9 @@
+Update 2016-01-14
+* change: linePoseEstim.m - the third parameter (weights 'w') made optional by moving it to 'varargin'; 'varargin' also allows to switch prenormalization on/off and to set the direction of the Z-axis as another optional parameters.
+* change: linePoseEstimAOR.m - order of some parameters changed, optional parameters moved to 'varargin'.
+* bugfix: functions/filterOutliers.m - when computing 'err_max_th', the absolute value of focal length is taken (focal length can also be negative)
+* change: test_simple9.m - linePoseEstim() function call updated due to change in parameters
+* change: test_random.m - linePoseEstim() function call updated due to change in parameters
+* change: test_VGG.m - linePoseEstim() function call updated due to change in parameters
+* added: test_AOR.m - testing code for Algebraic Outlier Rejection (for scenarios with outliers)
+
